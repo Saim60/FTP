@@ -1,0 +1,228 @@
+Passbook.js
+
+import axios from "axios";
+import React, { Component } from "react";
+
+// import './Table.css';
+class Table extends Component {
+    constructor() {
+        super();
+        this.state = {
+            data: [],
+            Balance: 0,
+            currentPage: 1
+        };
+    }
+    nextPage() {
+        let nextPage = this.state.currentPage + 1;
+        this.setState({ currentPage: nextPage });
+        this.refreshTransactions(nextPage);
+
+    }
+
+    prevPage() {
+        let nextPage = this.state.currentPage - 1;
+        this.setState({ currentPage: nextPage });
+        this.refreshTransactions(nextPage);
+
+    }
+
+    componentDidMount() {
+        this.refreshTransactions(1);
+    }
+
+    refreshTransactions(page, take = 2) {
+        axios
+            .post("http://localhost:5000/details", { take: take, page: page }) // for fetching the data from the mongoDB
+            // .then(res => data = res)
+            .then((res) => {
+                const creditData = res.data.filter((x) => x.TranType == "Credit");
+                const debitData = res.data.filter((x) => x.TranType == "Debit");
+                let creditSum = creditData.reduce(
+                    (accumulator, current) =>
+                        Number(accumulator) + Number(current.amount), 0
+                );
+                let debitSum = debitData.reduce(
+                    (accumulator, current) =>
+                        Number(accumulator) + Number(current.amount), 0
+                );
+                this.setState({ data: res.data, Balance: Number(creditSum) - Number(debitSum) });
+            })
+            .catch((err) => console.log(err));
+
+    }
+    render() {
+        const mystyle = {
+            border: "2px solid black",
+            padding: "7px",
+            margin: "auto",
+            backgroundColor: "wheat",
+        };
+        const { data } = this.state;
+        return (
+            <div>
+                <table style={mystyle}>
+                    <tr>
+                        <td style={mystyle}>Date</td>
+                        <td style={mystyle}>Credit</td>
+                        <td style={mystyle}>Debit</td>
+                        <td style={mystyle}>Balance</td>
+                        <td style={mystyle}>Description</td>
+
+                    </tr>
+                    {data.length
+                        ? data.map((data) => ( //array methods and will iterate over an array and perform a transformation or computation
+                            <tr>
+                                <td style={mystyle}>{data.Date} </td>
+                                <td style={mystyle}>{data.TranType == "Credit" ? data.amount : <p></p>}</td>{" "}
+                                <td style={mystyle}>{data.TranType == "Debit" ? data.amount : <p></p>}</td>
+                                {/* <td style={mystyle}>{data.TranType == "Debit" ? Number(data.Balance) - Number(data.amount) : Number(data.Balance) + Number(data.amount) }</td> */}
+                                <td style={mystyle}>{data.Balance}</td>  {/* for calculating total balance  */}
+
+
+                                <td style={mystyle}>{data.description}</td>
+                            </tr>
+                        ))
+                        : null}
+                    <tr>
+                        <td style={{ color: "blue" }}>
+                            <b>Remaining Balance:</b>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td style={mystyle} >{this.state.Balance}</td>
+
+                        <td></td>
+
+                    </tr>
+                </table>
+                <br></br>
+                <button type="button" onClick={() => this.prevPage()}>Prev</button>
+                <button type="button" onClick={() => this.nextPage()}>Next </button>
+            </div>
+        );
+    }
+}
+export default Table; // Exported the component
+
+
+
+
+
+app.jsx
+
+
+
+
+import React, { useState, useEffect } from 'react';
+import { Button, Modal } from "react-bootstrap";
+import Table from "./Passbook";
+import axios from 'axios'
+const App = () => {
+    const [amount, setName] = useState("");
+    const [Balance, setBalance] = useState('');
+    const [description, descRiption] = useState();
+    const [show, setShow] = useState(false);
+    let [TranType, getTranType] = useState("Credit");
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const InputEvent = (event) => {
+        console.log(event.target.value);
+        setName(event.target.value);
+        //setFullName(event.target.value);
+    };
+    useEffect(() => { 
+        axios
+            .get("http://localhost:5000/details")
+            // .then(res => data = res)
+            .then((res) => {
+                const creditData = res.data.filter((x) => x.TranType == "Credit");
+                const debitData = res.data.filter((x) => x.TranType == "Debit");
+                let creditSum = creditData.reduce(
+                    (accumulator, current) =>
+                        Number(accumulator) + Number(current.amount), 0
+                );
+                let debitSum = debitData.reduce(
+                    (accumulator, current) =>
+                        Number(accumulator) + Number(current.amount), 0
+                );
+                setBalance(Number(creditSum) - Number(debitSum));
+            })
+            .catch((err) => console.log(err));
+    }, [])
+    const onSubmit = () => {
+        debugger;
+        setShow(false);
+        var userdata = { // declared variable for storing the data of the table
+            amount,
+            description,
+            TranType,
+            Balance: (Number(amount) - Number(Balance)),
+            Date: new Date().toLocaleDateString()
+        }
+        axios.post("http://localhost:5000/exportdata", userdata)  // for posting the data to the mongoDB
+            .then((userdata) => {
+                console.log("Success:", userdata);
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    };
+    return (
+        <div id="Render">
+            <Button style={{ marginLeft: 820 }} variant="primary" onClick={handleShow}>
+                Add Transaction
+</Button>
+
+            <Table /> {/* used table to show on the browser  */}
+            <>
+                <Modal show={show} onHide={handleClose}>        
+                    <Modal.Header closeButton>
+                        <Modal.Title>New Transaction</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body><div>
+                        <select
+                            value={TranType}
+                            onChange={(e) => {
+                                getTranType(e.target.value);
+                            }}
+                        >
+                            <option value="Credit">Credit</option>
+                            <option value="Debit">Debit</option>
+                        </select>
+                        <br />
+                        <br></br>
+{/*  Modals are built with HTML, CSS, and JavaScript and it will open the window after clicking on the button  */}
+
+                        <input type="number"
+                            placeholder="Enter Amount"
+                            onChange={InputEvent}
+                            value={amount} />
+                        <br />
+                        <br></br>
+
+                        <input type="text"
+                            placeholder="Add Description"
+                            onChange={(e) => { descRiption(e.target.value) }}
+                            value={description}
+
+                        />
+
+                        <br />
+                    </div></Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Cancel
+</Button>
+                        <Button variant="primary" onClick={onSubmit} >
+                            Save Changes
+</Button>
+                    </Modal.Footer>
+                </Modal>
+            </>
+        </div>
+    );
+};
+export default App;
+

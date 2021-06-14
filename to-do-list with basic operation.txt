@@ -1,0 +1,146 @@
+To/do list 
+App.js
+import React from 'react';
+import ListItems from './ListItems'
+// import './App.css';
+import {library}from '@fortawesome/fontawesome-svg-core'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+library.add(faTrash)
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: [],
+      currentItem: {
+        text: '',
+        role:'',
+        key: ''
+      }
+    }
+    this.addItem = this.addItem.bind(this);
+    // this.handleInput = this.handleInput.bind(this);
+    this.setUpdate = this.setUpdate.bind(this);
+    this.deleteItem=this.deleteItem.bind(this);
+  }
+  addItem(e) {
+    debugger;
+    e.preventDefault();
+    let newItem = this.state.currentItem;
+    if (newItem.text !== "") {
+      newItem.key=Math.floor(Math.random()*5)+1
+      const items = [...this.state.items, newItem];
+      this.setState({
+        items: items,
+        currentItem: {
+          text: '',
+          key: ''
+        }
+      })
+     this.inputTitle.value=""
+     this.inputTitlee.value=""
+    }
+  }
+  deleteItem(key){
+    debugger;
+     
+    const filteredItems= this.state.items.filter(item =>
+      item.key!==key);
+    this.setState({
+      items: filteredItems
+    })
+
+  }
+  handleNameChange= (e) => {  
+    this.setState({
+      currentItem: {
+        ...this.state.currentItem,
+        text: e.target.value
+      }
+    });
+  }
+  handleRoleChange=(e)=> {
+    this.setState({
+      currentItem: {
+        ...this.state.currentItem,
+        role: e.target.value
+      }
+    });
+  }
+  setUpdate(text, key) {
+    console.log("items:" + this.state.items);
+    const items = this.state.items;
+    items.map(item => {
+      if (item.key === key) {
+        console.log(item.key + "    " + key)
+        item.text = text;
+      }
+    })
+    this.setState({
+      items: items
+    })
+  }
+  render() {
+    return (
+      <div className="App">
+        <header>
+          <form id="Add/Update" onSubmit={this.addItem}>
+            Name: <input type="text" ref={el => this.inputTitle = el}  onChange={this.handleNameChange}></input>
+            <br />
+        Role: <input type="text" ref={el => this.inputTitlee = el}  onChange={this.handleRoleChange}></input>
+            <br />
+            <button type="submit">Update</button>
+          </form>
+          {/* <p>{this.state.items.text}</p> */}
+
+          <ListItems items={this.state.items} deleteItem={this.deleteItem}setUpdate={this.setUpdate} />
+          {/* <UserDetail /> */}
+        </header>
+      </div>
+    );
+  }
+}
+export default App;
+
+ListItems.js
+
+
+import React from 'react';
+// import './ListItems.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import FlipMove from 'react-flip-move';
+
+function ListItems(props){
+    const items = props.items;
+    const listItems = items.map(item =>
+   {
+       return <div className="list" key={item.key}>
+     <p>
+         <input type="text" id={item.key} value={item.text} onChange={(e)=>{
+             props.setUpdate(e.target.value,item.key)}}/>
+            
+         <input type="text" id={item.key} value={item.role} onChange={(e)=>{
+             props.setUpdate(e.target.value,item.key)}}/>
+
+<span>
+       
+       <FontAwesomeIcon className="faicons" onClick={() => {
+           props.deleteItem(item.key)
+       }} icon="trash" />
+       </span>
+
+
+
+
+     </p>
+     
+     
+    </div>})
+    return <div> 
+        <FlipMove duration={300} easing="ease-in-out">
+        {listItems}
+        </FlipMove>
+    
+    </div>;
+  }
+
+  export default ListItems;
