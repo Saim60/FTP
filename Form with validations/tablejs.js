@@ -46,20 +46,6 @@ function AddTable() {
         list9[x] = document.getElementById('p3').value;
         //  console.log('r',list9[x]);
     }
-// return false;
-
-    // if(!form.service.checked) {
-    //     alert("Please choose at least one");
-    //     form.terms.focus();
-    //     return false;
-    //   }
-    //   return true;
-    // if (!document.getElementById('p1').checked){
-    //     alert("Please choose at least one");
-    //     form.terms.focus();
-    //     return false;
-    // }
-    //     return true;
  
 
     var cel1 = NewRow.insertCell(0);
@@ -87,24 +73,24 @@ function AddTable() {
     x++;
 }
 function validateForm() {
-    var fn = document.getElementById("name").value;
+    var fname = document.getElementById("name").value;
 
-    if (fn == null || fn == "") {
+    if (fname == null || fname == "") {
         errorr.innerHTML = "<span style='color: red;'>" +
             "Please enter a valid name</span>"
     }
-    else if (fn.length < 3) {
+    else if (fname.length < 3) {
         errorr.innerHTML = "<span style='color: red;'>" +
             "Please enter at least 3 digit</span>"
     }
-    else if (!isNaN(fn)) {
+    else if (!isNaN(fname)) {
         errorr.innerHTML = "<span style='color: red;'>" +
             "Name should not be in digit</span>"
     }
     else {
         errorr.innerHTML = ""
     }
-    var ln = document.getElementById("lname").value;
+    var lname = document.getElementById("lnameame").value;
 
     if (ln == null || ln == "") {
         errorrr.innerHTML = "<span style='color: red;'>" +
@@ -144,121 +130,6 @@ function validateForm() {
     else {
         error.innerHTML = ""
     }
-    // var fn = document.forms["index"]["fname"].value;
-    // var ln = document.forms["index"]["lname"].value;
-    // var email = document.forms["index"]["email"].value;
-    // var phone = document.forms["index"]["phone"].value;
-    
-
-    // if (fn == null || fn == "") {
-    //     errorr.innerHTML = "<span style='color: red;'>" +
-    //         "Please enter a valid name</span>"
-    // }
-    // else if (fn.length < 3) {
-    //     errorr.innerHTML = "<span style='color: red;'>" +
-    //         "Please enter at least 3 digit</span>"
-    // }
-    // else if (!isNaN(fn)) {
-    //     errorr.innerHTML = "<span style='color: red;'>" +
-    //     "Name should not be in digit</span>"
-    // }
-    // else {
-    //     errorr.innerHTML = ""
-    // }
-
-
-    // if (ln == null || ln == "") {
-    //     errorrr.innerHTML = "<span style='color: red;'>" +
-    //         "Please enter a valid last name</span>"
-    // }
-    // else if (!isNaN(ln)) {
-    //     errorrr.innerHTML = "<span style='color: red;'>" +
-    //     "Last_Name should not be in digit</span>"
-    // }
-    // else if (ln.length < 3) {
-    //     errorrr.innerHTML = "<span style='color: red;'>" +
-    //         "Please enter at least 3 digit</span>"
-    // }
-    // else {
-    //     errorrr.innerHTML = ""
-    // }
-
-    // var at = email.indexOf("@");
-    // var dot = email.lastIndexOf(".");
-    // if (at < 1 || dot < at + 2 || dot + 2 >= email.lenght) {
-    //     errorrrr.innerHTML = "<span style='color: red;'>" +
-    //         "Please enter a valid email</span>"
-    //         // alert("enter valid email")
-    // }  else {
-    //     errorrrr.innerHTML = ""
-    // }
-    // return false;
-
-
-    // if (phone == null || phone == "") {
-    //     error.innerHTML = "<span style='color: red;'>" +
-    //         "Please enter a valid phone no.</span>"
-    // }
-    // else if (phone.length !=10) {
-    //     error.innerHTML = "<span style='color: red;'>" +
-    //         "Please enter 10 digit</span>"
-    // }
-    // else {
-    //     error.innerHTML = ""
-    // }
-
-
-//     var a = document.forms["index.html"]["service"].value;
-//     for(i=0;i<a.length;i++){
-//         if(a[i].checked==true)
-//         return true;
-//     }
-//     document.getElementById("box")
-//     .innerHTML = "<span style='color: red;'>" +
-//           "Please check at least 1 checkbox </span>"
-// return false;
-
-//  var isFormValid = true;
-//  alert(document.getElementsByName('[name="service"]:checked').length);
-//     if (document.getElementsByName('[type="checkbox"]:checked').length < 1) {
-//         box.innerHTML = "<span style='color: red;'>" +
-//         "Please check at least 1 checkbox </span>"
-//          isFormValid = false;
-//       }
-//       else {
-//         box.innerHTML = "zxc"
-//     }
-
-//       if (document.getElementsByName('[name="package"]:checked').length < 1) {
-//         radio.innerHTML = "<span style='color: red;'>" +
-//         "Please select a radio option </span>"
-//      isFormValid = false;
-
-//       }
-//       else {
-//         radio.innerHTML = "abc"
-//     }
-//     return isFormValid;
-
-// var b=document.index.service;
-// for (i=0;i<b.length;i++){
-//    if (b[i].checked==true)
-//    return true;
-// }
-// box.innerHTML = "<span style='color: red;'>" +
-// "select anyonekjnhfkdjvf </span>"
-// return false;
-
-
-// var a=document.index.package;
-// for (i=0;i<a.length;i++){
-//    if (a[i].checked==true)
-//    return true;
-// }
-// radio.innerHTML = "<span style='color: red;'>" +
-// "select anyone </span>"
-// return false;
-
 
 var a=document.index.package;
 for (i=0;i<a.length;i++){
@@ -280,11 +151,4 @@ for (i = 0; i < b.length; i++) {
 box.innerHTML = "<span style='color: red;'>" +
     "select anyone checkbox </span>"
 
-// var b=document.index.service;
-// for (i=0;i<b.length;i++){
-//    if (b[i].checked==true)
-//    return true;
-// }
-// box.innerHTML = "<span style='color: red;'>" +
-// "select anyonekjnhfkdjvf </span>"
 }
